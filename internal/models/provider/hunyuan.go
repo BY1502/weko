@@ -22,7 +22,7 @@ func init() {
 func (p *HunyuanProvider) Info() ProviderInfo {
 	return ProviderInfo{
 		Name:        ProviderHunyuan,
-		DisplayName: "腾讯混元 Hunyuan",
+		DisplayName: "Tencent Hunyuan",
 		Description: "hunyuan-pro, hunyuan-standard, hunyuan-embedding, etc.",
 		DefaultURLs: map[types.ModelType]string{
 			types.ModelTypeKnowledgeQA: HunyuanBaseURL,

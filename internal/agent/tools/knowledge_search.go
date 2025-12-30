@@ -1081,7 +1081,7 @@ func (t *KnowledgeSearchTool) formatOutput(
 			result.Content,
 		)
 
-		// 解析并输出关联的图片信息
+		// 관련 이미지 정보를 파싱해 출력
 		if result.ImageInfo != "" {
 			var imageInfos []types.ImageInfo
 			if err := json.Unmarshal([]byte(result.ImageInfo), &imageInfos); err == nil && len(imageInfos) > 0 {
@@ -1132,11 +1132,11 @@ func (t *KnowledgeSearchTool) formatOutput(
 
 		last := formattedResults[len(formattedResults)-1]
 
-		// 添加图片信息到结构化数据
+		// 구조화된 데이터에 이미지 정보 추가
 		if result.ImageInfo != "" {
 			var imageInfos []types.ImageInfo
 			if err := json.Unmarshal([]byte(result.ImageInfo), &imageInfos); err == nil && len(imageInfos) > 0 {
-				// 构建简化的图片信息列表
+				// 단순화된 이미지 정보 리스트 생성
 				imageList := make([]map[string]string, 0, len(imageInfos))
 				for _, img := range imageInfos {
 					imgData := make(map[string]string)
@@ -1173,7 +1173,7 @@ func (t *KnowledgeSearchTool) formatOutput(
 	}
 
 	// Add statistics and recommendations for each knowledge
-	output += "\n=== 检索统计与建议 ===\n\n"
+	output += "\n=== 검색 통계 및 제안 ===\n\n"
 	for knowledgeID, retrievedChunks := range knowledgeChunkMap {
 		totalChunks := knowledgeTotalMap[knowledgeID]
 		retrievedCount := len(retrievedChunks)
@@ -1183,10 +1183,10 @@ func (t *KnowledgeSearchTool) formatOutput(
 			percentage := float64(retrievedCount) / float64(totalChunks) * 100
 			remaining := totalChunks - int64(retrievedCount)
 
-			output += fmt.Sprintf("文档: %s (%s)\n", title, knowledgeID)
-			output += fmt.Sprintf("  总 Chunk 数: %d\n", totalChunks)
-			output += fmt.Sprintf("  已召回: %d 个 (%.1f%%)\n", retrievedCount, percentage)
-			output += fmt.Sprintf("  未召回: %d 个\n", remaining)
+			output += fmt.Sprintf("문서: %s (%s)\n", title, knowledgeID)
+			output += fmt.Sprintf("  총 Chunk 수: %d\n", totalChunks)
+			output += fmt.Sprintf("  회수됨: %d 개 (%.1f%%)\n", retrievedCount, percentage)
+			output += fmt.Sprintf("  미회수: %d 개\n", remaining)
 
 		}
 	}
@@ -1228,13 +1228,13 @@ type chunkRange struct {
 	end   int
 }
 
-// getEnrichedPassage 合并Content和ImageInfo的文本内容
+// getEnrichedPassage merges content with image info text
 func (t *KnowledgeSearchTool) getEnrichedPassage(ctx context.Context, result *types.SearchResult) string {
 	if result.ImageInfo == "" {
 		return result.Content
 	}
 
-	// 解析ImageInfo
+	// Parse ImageInfo
 	var imageInfos []types.ImageInfo
 	err := json.Unmarshal([]byte(result.ImageInfo), &imageInfos)
 	if err != nil {
@@ -1246,14 +1246,14 @@ func (t *KnowledgeSearchTool) getEnrichedPassage(ctx context.Context, result *ty
 		return result.Content
 	}
 
-	// 提取所有图片的描述和OCR文本
+	// 이미지 설명과 OCR 텍스트를 모두 수집
 	var imageTexts []string
 	for _, img := range imageInfos {
 		if img.Caption != "" {
-			imageTexts = append(imageTexts, fmt.Sprintf("图片描述: %s", img.Caption))
+			imageTexts = append(imageTexts, fmt.Sprintf("이미지 설명: %s", img.Caption))
 		}
 		if img.OCRText != "" {
-			imageTexts = append(imageTexts, fmt.Sprintf("图片文本: %s", img.OCRText))
+			imageTexts = append(imageTexts, fmt.Sprintf("이미지 텍스트: %s", img.OCRText))
 		}
 	}
 
@@ -1261,7 +1261,7 @@ func (t *KnowledgeSearchTool) getEnrichedPassage(ctx context.Context, result *ty
 		return result.Content
 	}
 
-	// 组合内容和图片信息
+	// 본문과 이미지 정보를 합침
 	combinedText := result.Content
 	if combinedText != "" {
 		combinedText += "\n\n"

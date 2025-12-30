@@ -15,7 +15,7 @@ var listKnowledgeChunksTool = BaseTool{
 	description: `Retrieve full chunk content for a document by knowledge_id.
 
 ## Use After grep_chunks or knowledge_search:
-1. grep_chunks(["keyword", "变体"]) → get knowledge_id  
+1. grep_chunks(["keyword", "variant"]) → get knowledge_id  
 2. list_knowledge_chunks(knowledge_id) → read full content
 
 ## When to Use:
@@ -161,7 +161,7 @@ func (t *ListKnowledgeChunksTool) Execute(ctx context.Context, args json.RawMess
 			"parent_chunk_id": c.ParentChunkID,
 		}
 
-		// 添加图片信息
+		// 이미지 정보 추가
 		if c.ImageInfo != "" {
 			var imageInfos []types.ImageInfo
 			if err := json.Unmarshal([]byte(c.ImageInfo), &imageInfos); err == nil && len(imageInfos) > 0 {
@@ -226,52 +226,52 @@ func (t *ListKnowledgeChunksTool) buildOutput(
 	chunks []*types.Chunk,
 ) string {
 	builder := &strings.Builder{}
-	builder.WriteString("=== 知识文档分块 ===\n\n")
+	builder.WriteString("=== 지식 문서 분할 ===\n\n")
 
 	if knowledgeTitle != "" {
-		fmt.Fprintf(builder, "文档: %s (%s)\n", knowledgeTitle, knowledgeID)
+		fmt.Fprintf(builder, "문서: %s (%s)\n", knowledgeTitle, knowledgeID)
 	} else {
-		fmt.Fprintf(builder, "文档 ID: %s\n", knowledgeID)
+		fmt.Fprintf(builder, "문서 ID: %s\n", knowledgeID)
 	}
-	fmt.Fprintf(builder, "总分块数: %d\n", total)
+	fmt.Fprintf(builder, "총 분할 수: %d\n", total)
 
 	if fetched == 0 {
-		builder.WriteString("未找到任何分块，请确认文档是否已完成解析。\n")
+		builder.WriteString("분할을 찾지 못했습니다. 문서 파싱이 완료되었는지 확인하세요.\n")
 		if total > 0 {
-			builder.WriteString("文档存在但当前页数据为空，请检查分页参数。\n")
+			builder.WriteString("문서는 존재하지만 현재 페이지가 비어 있습니다. 페이지 매개변수를 확인하세요.\n")
 		}
 		return builder.String()
 	}
 	fmt.Fprintf(
 		builder,
-		"本次拉取: %d 条， 检索范围: %d - %d\n\n",
+		"이번 조회: %d 개, 범위: %d - %d\n\n",
 		fetched,
 		chunks[0].ChunkIndex,
 		chunks[len(chunks)-1].ChunkIndex,
 	)
 
-	builder.WriteString("=== 分块内容预览 ===\n\n")
+	builder.WriteString("=== 분할 콘텐츠 미리보기 ===\n\n")
 	for idx, c := range chunks {
 		fmt.Fprintf(builder, "Chunk #%d (Index %d)\n", idx+1, c.ChunkIndex+1)
 		fmt.Fprintf(builder, "  chunk_id: %s\n", c.ID)
-		fmt.Fprintf(builder, "  类型: %s\n", c.ChunkType)
-		fmt.Fprintf(builder, "  内容: %s\n", summarizeContent(c.Content))
+		fmt.Fprintf(builder, "  유형: %s\n", c.ChunkType)
+		fmt.Fprintf(builder, "  내용: %s\n", summarizeContent(c.Content))
 
-		// 输出关联的图片信息
+		// 관련 이미지 정보 출력
 		if c.ImageInfo != "" {
 			var imageInfos []types.ImageInfo
 			if err := json.Unmarshal([]byte(c.ImageInfo), &imageInfos); err == nil && len(imageInfos) > 0 {
-				fmt.Fprintf(builder, "  关联图片 (%d):\n", len(imageInfos))
+				fmt.Fprintf(builder, "  관련 이미지 (%d):\n", len(imageInfos))
 				for imgIdx, img := range imageInfos {
-					fmt.Fprintf(builder, "    图片 %d:\n", imgIdx+1)
+					fmt.Fprintf(builder, "    이미지 %d:\n", imgIdx+1)
 					if img.URL != "" {
 						fmt.Fprintf(builder, "      URL: %s\n", img.URL)
 					}
 					if img.Caption != "" {
-						fmt.Fprintf(builder, "      描述: %s\n", img.Caption)
+						fmt.Fprintf(builder, "      설명: %s\n", img.Caption)
 					}
 					if img.OCRText != "" {
-						fmt.Fprintf(builder, "      OCR文本: %s\n", img.OCRText)
+						fmt.Fprintf(builder, "      OCR 텍스트: %s\n", img.OCRText)
 					}
 				}
 			}
@@ -280,7 +280,7 @@ func (t *ListKnowledgeChunksTool) buildOutput(
 	}
 
 	if int64(fetched) < total {
-		builder.WriteString("提示：文档仍有更多分块，可调整 offset 或多次调用以获取全部内容。\n")
+		builder.WriteString("알림: 더 많은 분할이 있습니다. offset을 조정하거나 여러 번 호출하세요.\n")
 	}
 
 	return builder.String()
@@ -290,7 +290,7 @@ func (t *ListKnowledgeChunksTool) buildOutput(
 func summarizeContent(content string) string {
 	cleaned := strings.TrimSpace(content)
 	if cleaned == "" {
-		return "(空内容)"
+		return "(내용 없음)"
 	}
 
 	return strings.TrimSpace(string(cleaned))

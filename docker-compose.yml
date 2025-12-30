@@ -29,7 +29,7 @@ services:
       - "${APP_PORT:-8080}:8080"
     volumes:
       - data-files:/data/files
-      # Optional: mount custom config file
+      # 선택: 사용자 정의 config 파일 마운트
       # - ./config/config.yaml:/app/config/config.yaml
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
@@ -103,7 +103,7 @@ services:
       - INIT_RERANK_MODEL_NAME=${INIT_RERANK_MODEL_NAME:-}
       - INIT_RERANK_MODEL_BASE_URL=${INIT_RERANK_MODEL_BASE_URL:-}
       - INIT_RERANK_MODEL_API_KEY=${INIT_RERANK_MODEL_API_KEY:-}
-      # File size limit (in MB)
+      # 파일 크기 제한(MB)
       - MAX_FILE_SIZE_MB=${MAX_FILE_SIZE_MB:-50}
     depends_on:
       redis:
@@ -146,7 +146,7 @@ services:
       - MINIO_USE_SSL=${MINIO_USE_SSL:-}
       - WEB_PROXY=${WEB_PROXY:-}
       - MINERU_ENDPOINT=${MINERU_ENDPOINT:-}
-      # File size limit (in MB)
+      # 파일 크기 제한(MB)
       - MAX_FILE_SIZE_MB=${MAX_FILE_SIZE_MB:-50}
     healthcheck:
       test: ["CMD", "grpc_health_probe", "-addr=:50051"]
@@ -160,7 +160,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  # 修改的PostgreSQL配置
+  # 수정된 PostgreSQL 설정
   postgres:
     image: paradedb/paradedb:v0.18.9-pg17
     container_name: WeKnora-postgres
@@ -174,12 +174,12 @@ services:
       - WeKnora-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
-      interval: 10s # 增加时间间隔
-      timeout: 10s # 增加超时时间
-      retries: 3 # 减少重试次数，让失败更快反馈
-      start_period: 30s # 给予初始启动更多时间
+      interval: 10s # 확인 간격을 늘림
+      timeout: 10s # 타임아웃을 늘림
+      retries: 3 # 재시도 횟수를 줄여 실패를 빠르게 감지
+      start_period: 30s # 초기 부팅 시간을 더 줌
     restart: unless-stopped
-    # 添加停机时的优雅退出时间
+    # 종료 시 우아한 종료 시간 추가
     stop_grace_period: 1m
 
   redis:
@@ -217,20 +217,20 @@ services:
     image: jaegertracing/all-in-one:1.76.0
     container_name: WeKnora-jaeger
     ports:
-      - "6831:6831/udp" # Jaeger Thrift接收器
-      - "6832:6832/udp" # Jaeger Thrift接收器(Compact)
-      - "5778:5778" # 配置端口
+      - "6831:6831/udp" # Jaeger Thrift 수신기
+      - "6832:6832/udp" # Jaeger Thrift 수신기(Compact)
+      - "5778:5778" # 설정 포트
       - "16686:16686" # Web UI
-      - "4317:4317" # OTLP gRPC接收器
-      - "4318:4318" # OTLP HTTP接收器
-      - "14250:14250" # 接收模型端口
-      - "14268:14268" # Jaeger HTTP接收器
-      - "9411:9411" # Zipkin兼容性端口
+      - "4317:4317" # OTLP gRPC 수신기
+      - "4318:4318" # OTLP HTTP 수신기
+      - "14250:14250" # 모델 수신 포트
+      - "14268:14268" # Jaeger HTTP 수신기
+      - "9411:9411" # Zipkin 호환 포트
     environment:
       - COLLECTOR_OTLP_ENABLED=true
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
     volumes:
-      - jaeger_data:/var/lib/jaeger # 持久化 Jaeger 数据
+      - jaeger_data:/var/lib/jaeger # Jaeger 데이터 영구 저장
     networks:
       - WeKnora-network
     restart: unless-stopped

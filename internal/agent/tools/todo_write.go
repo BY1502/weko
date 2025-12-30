@@ -173,7 +173,7 @@ func (t *TodoWriteTool) Execute(ctx context.Context, args json.RawMessage) (*typ
 	}
 
 	if input.Task == "" {
-		input.Task = "未提供任务描述"
+		input.Task = "작업 설명이 제공되지 않았습니다"
 	}
 
 	// Parse plan steps
@@ -227,17 +227,17 @@ func getStringArrayField(m map[string]interface{}, key string) []string {
 
 // generatePlanOutput generates a formatted plan output
 func generatePlanOutput(task string, steps []PlanStep) string {
-	output := "计划已创建\n\n"
-	output += fmt.Sprintf("**任务**: %s\n\n", task)
+	output := "계획이 생성되었습니다\n\n"
+	output += fmt.Sprintf("**작업**: %s\n\n", task)
 
 	if len(steps) == 0 {
-		output += "注意：未提供具体步骤。建议创建3-7个检索任务以系统化研究。\n\n"
-		output += "建议的检索流程（专注于检索任务，不包含总结）：\n"
-		output += "1. 使用 grep_chunks 搜索关键词定位相关文档\n"
-		output += "2. 使用 knowledge_search 进行语义搜索获取相关内容\n"
-		output += "3. 使用 list_knowledge_chunks 获取关键文档的完整内容\n"
-		output += "4. 使用 web_search 获取补充信息（如需要）\n"
-		output += "\n注意：总结和综合由 thinking 工具处理，不要在此处添加总结任务。\n"
+		output += "주의: 구체적인 단계가 없습니다. 3~7개의 검색 작업으로 세분화하세요.\n\n"
+		output += "추천 검색 흐름(검색 작업에만 집중, 요약 제외):\n"
+		output += "1. grep_chunks 로 키워드 검색 후 관련 문서 찾기\n"
+		output += "2. knowledge_search 로 의미 검색 수행\n"
+		output += "3. list_knowledge_chunks 로 핵심 문서의 전체 내용 확인\n"
+		output += "4. 필요 시 web_search 로 추가 정보 수집\n"
+		output += "\n주의: 요약/종합은 thinking 도구가 처리하므로 여기에는 추가하지 마세요.\n"
 		return output
 	}
 
@@ -258,7 +258,7 @@ func generatePlanOutput(task string, steps []PlanStep) string {
 	totalCount := len(steps)
 	remainingCount := pendingCount + inProgressCount
 
-	output += "**计划步骤**:\n\n"
+	output += "**계획 단계**:\n\n"
 
 	// Display all steps in order
 	for i, step := range steps {
@@ -266,32 +266,32 @@ func generatePlanOutput(task string, steps []PlanStep) string {
 	}
 
 	// Add summary and emphasis on remaining tasks
-	output += "\n=== 任务进度 ===\n"
-	output += fmt.Sprintf("总计: %d 个任务\n", totalCount)
-	output += fmt.Sprintf("✅ 已完成: %d 个\n", completedCount)
-	output += fmt.Sprintf("🔄 进行中: %d 个\n", inProgressCount)
-	output += fmt.Sprintf("⏳ 待处理: %d 个\n", pendingCount)
+	output += "\n=== 작업 진행 상황 ===\n"
+	output += fmt.Sprintf("총계: %d 개 작업\n", totalCount)
+	output += fmt.Sprintf("✅ 완료: %d 개\n", completedCount)
+	output += fmt.Sprintf("🔄 진행 중: %d 개\n", inProgressCount)
+	output += fmt.Sprintf("⏳ 대기: %d 개\n", pendingCount)
 
-	output += "\n=== ⚠️ 重要提醒 ===\n"
+	output += "\n=== ⚠️ 중요 알림 ===\n"
 	if remainingCount > 0 {
-		output += fmt.Sprintf("**还有 %d 个任务未完成！**\n\n", remainingCount)
-		output += "**必须完成所有任务后才能总结或得出结论。**\n\n"
-		output += "下一步操作：\n"
+		output += fmt.Sprintf("**아직 %d 개의 작업이 남았습니다!**\n\n", remainingCount)
+		output += "**모든 작업을 완료한 후에만 요약하거나 결론을 낼 수 있습니다.**\n\n"
+		output += "다음 단계:\n"
 		if inProgressCount > 0 {
-			output += "- 继续完成当前进行中的任务\n"
+			output += "- 진행 중인 작업을 마저 수행\n"
 		}
 		if pendingCount > 0 {
-			output += fmt.Sprintf("- 开始处理 %d 个待处理任务\n", pendingCount)
-			output += "- 按顺序完成每个任务，不要跳过\n"
+			output += fmt.Sprintf("- %d 개 대기 작업을 처리 시작\n", pendingCount)
+			output += "- 순서대로 완료하고 건너뛰지 않기\n"
 		}
-		output += "- 完成每个任务后，更新 todo_write 标记为 completed\n"
-		output += "- 只有在所有任务完成后，才能生成最终总结\n"
+		output += "- 각 작업 완료 시 todo_write 상태를 completed 로 업데이트\n"
+		output += "- 모든 작업 완료 후 최종 요약 생성\n"
 	} else {
-		output += "✅ **所有任务已完成！**\n\n"
-		output += "现在可以：\n"
-		output += "- 综合所有任务的发现\n"
-		output += "- 生成完整的最终答案或报告\n"
-		output += "- 确保所有方面都已充分研究\n"
+		output += "✅ **모든 작업이 완료되었습니다!**\n\n"
+		output += "이제 할 일:\n"
+		output += "- 모든 작업 결과를 종합\n"
+		output += "- 최종 답변/보고서 생성\n"
+		output += "- 모든 측면이 충분히 조사되었는지 확인\n"
 	}
 
 	return output
@@ -314,7 +314,7 @@ func formatPlanStep(index int, step PlanStep) string {
 	output := fmt.Sprintf("  %d. %s [%s] %s\n", index, emoji, step.Status, step.Description)
 
 	// if len(step.ToolsToUse) > 0 {
-	// 	output += fmt.Sprintf("     工具: %s\n", strings.Join(step.ToolsToUse, ", "))
+	// 	output += fmt.Sprintf("     도구: %s\n", strings.Join(step.ToolsToUse, ", "))
 	// }
 
 	return output

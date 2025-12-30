@@ -24,25 +24,25 @@ type FunctionDef struct {
 	Parameters  json.RawMessage `json:"parameters"`
 }
 
-// ChatOptions 聊天选项
+// ChatOptions defines chat options
 type ChatOptions struct {
-	Temperature         float64         `json:"temperature"`           // 温度参数
-	TopP                float64         `json:"top_p"`                 // Top P 参数
-	Seed                int             `json:"seed"`                  // 随机种子
-	MaxTokens           int             `json:"max_tokens"`            // 最大 token 数
-	MaxCompletionTokens int             `json:"max_completion_tokens"` // 最大完成 token 数
-	FrequencyPenalty    float64         `json:"frequency_penalty"`     // 频率惩罚
-	PresencePenalty     float64         `json:"presence_penalty"`      // 存在惩罚
-	Thinking            *bool           `json:"thinking"`              // 是否启用思考
-	Tools               []Tool          `json:"tools,omitempty"`       // 可用工具列表
+	Temperature         float64         `json:"temperature"`           // temperature
+	TopP                float64         `json:"top_p"`                 // top-p
+	Seed                int             `json:"seed"`                  // random seed
+	MaxTokens           int             `json:"max_tokens"`            // max tokens
+	MaxCompletionTokens int             `json:"max_completion_tokens"` // max completion tokens
+	FrequencyPenalty    float64         `json:"frequency_penalty"`     // frequency penalty
+	PresencePenalty     float64         `json:"presence_penalty"`      // presence penalty
+	Thinking            *bool           `json:"thinking"`              // enable thinking mode
+	Tools               []Tool          `json:"tools,omitempty"`       // available tools
 	ToolChoice          string          `json:"tool_choice,omitempty"` // "auto", "required", "none", or specific tool
-	Format              json.RawMessage `json:"format,omitempty"`      // 响应格式定义
+	Format              json.RawMessage `json:"format,omitempty"`      // response format
 }
 
-// Message 表示聊天消息
+// Message represents a chat message
 type Message struct {
-	Role       string     `json:"role"`                   // 角色：system, user, assistant, tool
-	Content    string     `json:"content"`                // 消息内容
+	Role       string     `json:"role"`                   // system, user, assistant, tool
+	Content    string     `json:"content"`                // message content
 	Name       string     `json:"name,omitempty"`         // Function/tool name (for tool role)
 	ToolCallID string     `json:"tool_call_id,omitempty"` // Tool call ID (for tool role)
 	ToolCalls  []ToolCall `json:"tool_calls,omitempty"`   // Tool calls (for assistant role)
@@ -61,18 +61,18 @@ type FunctionCall struct {
 	Arguments string `json:"arguments"` // JSON string
 }
 
-// Chat 定义了聊天接口
+// Chat defines the chat interface
 type Chat interface {
-	// Chat 进行非流式聊天
+	// Chat performs non-streaming chat
 	Chat(ctx context.Context, messages []Message, opts *ChatOptions) (*types.ChatResponse, error)
 
-	// ChatStream 进行流式聊天
+	// ChatStream performs streaming chat
 	ChatStream(ctx context.Context, messages []Message, opts *ChatOptions) (<-chan types.StreamResponse, error)
 
-	// GetModelName 获取模型名称
+	// GetModelName returns model name
 	GetModelName() string
 
-	// GetModelID 获取模型ID
+	// GetModelID returns model ID
 	GetModelID() string
 }
 
@@ -86,7 +86,7 @@ type ChatConfig struct {
 	Extra     map[string]any
 }
 
-// NewChat 创建聊天实例
+// NewChat creates a chat instance
 func NewChat(config *ChatConfig) (Chat, error) {
 	var chat Chat
 	var err error

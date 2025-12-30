@@ -38,7 +38,7 @@ export default function (knowledgeBaseId?: string) {
       .then((result: any) => {
         const { data, total: totalResult } = result;
     const cardList_ = data.map((item: any) => {
-      const rawName = item.file_name || item.title || item.source || '未命名文档'
+      const rawName = item.file_name || item.title || item.source || '제목 없는 문서'
       const dotIndex = rawName.lastIndexOf('.')
       const displayName = dotIndex > 0 ? rawName.substring(0, dotIndex) : rawName
       const fileTypeSource = item.file_type || (item.type === 'manual' ? 'MANUAL' : '')
@@ -68,14 +68,14 @@ export default function (knowledgeBaseId?: string) {
     delKnowledgeDetails(item.id)
       .then((result: any) => {
         if (result.success) {
-          MessagePlugin.info("知识删除成功！");
+          MessagePlugin.info("지식을 삭제했습니다!");
           getKnowled();
         } else {
-          MessagePlugin.error("知识删除失败！");
+          MessagePlugin.error("지식 삭제에 실패했습니다!");
         }
       })
       .catch(() => {
-        MessagePlugin.error("知识删除失败！");
+        MessagePlugin.error("지식 삭제에 실패했습니다!");
       });
   };
   const openMore = (index: number) => {
@@ -88,7 +88,7 @@ export default function (knowledgeBaseId?: string) {
   };
   const requestMethod = (file: any, uploadInput: any) => {
     if (!(file instanceof File) || !uploadInput) {
-      MessagePlugin.error("文件类型错误！");
+      MessagePlugin.error("잘못된 파일 형식입니다!");
       return;
     }
     
@@ -106,24 +106,24 @@ export default function (knowledgeBaseId?: string) {
       currentKbId = knowledgeBaseId;
     }
     if (!currentKbId) {
-      MessagePlugin.error("缺少知识库ID");
+      MessagePlugin.error("지식베이스 ID가 없습니다");
       return;
     }
     
     uploadKnowledgeFile(currentKbId, { file })
       .then((result: any) => {
         if (result.success) {
-          MessagePlugin.info("上传成功！");
+          MessagePlugin.info("업로드 성공!");
           getKnowled({ page: 1, page_size: 35 }, currentKbId);
         } else {
-          const errorMessage = result.error?.message || result.message || "上传失败！";
-          MessagePlugin.error(result.code === 'duplicate_file' ? "文件已存在" : errorMessage);
+          const errorMessage = result.error?.message || result.message || "업로드 실패!";
+          MessagePlugin.error(result.code === 'duplicate_file' ? "파일이 이미 존재합니다" : errorMessage);
         }
         uploadInput.value.value = "";
       })
       .catch((err: any) => {
-        const errorMessage = err.error?.message || err.message || "上传失败！";
-        MessagePlugin.error(err.code === 'duplicate_file' ? "文件已存在" : errorMessage);
+        const errorMessage = err.error?.message || err.message || "업로드 실패!";
+        MessagePlugin.error(err.code === 'duplicate_file' ? "파일이 이미 존재합니다" : errorMessage);
         uploadInput.value.value = "";
       });
   };
@@ -142,7 +142,7 @@ export default function (knowledgeBaseId?: string) {
         if (result.success && result.data) {
           const { data } = result;
           Object.assign(details, {
-            title: data.file_name || data.title || data.source || '未命名文档',
+            title: data.file_name || data.title || data.source || '제목 없는 문서',
             time: formatStringDate(new Date(data.updated_at)),
             id: data.id,
             type: data.type || 'file',

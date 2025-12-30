@@ -985,7 +985,7 @@ export default {
     },
   },
   language: {
-    zhCN: "简体中文",
+    zhCN: "중국어(간체)",
     enUS: "English",
     ruRU: "Русский",
     koKR: "한국어",

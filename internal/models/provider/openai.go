@@ -10,14 +10,14 @@ const (
 	OpenAIBaseURL = "https://api.openai.com/v1"
 )
 
-// OpenAIProvider 实现 OpenAI 的 Provider 接口
+// OpenAIProvider implements the OpenAI provider interface
 type OpenAIProvider struct{}
 
 func init() {
 	Register(&OpenAIProvider{})
 }
 
-// Info 返回 OpenAI provider 的元数据
+// Info returns metadata for the OpenAI provider
 func (p *OpenAIProvider) Info() ProviderInfo {
 	return ProviderInfo{
 		Name:        ProviderOpenAI,
@@ -39,7 +39,7 @@ func (p *OpenAIProvider) Info() ProviderInfo {
 	}
 }
 
-// ValidateConfig 验证 OpenAI provider 配置
+// ValidateConfig validates OpenAI provider config
 func (p *OpenAIProvider) ValidateConfig(config *Config) error {
 	if config.APIKey == "" {
 		return fmt.Errorf("API key is required for OpenAI provider")

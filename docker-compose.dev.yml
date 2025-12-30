@@ -1,6 +1,6 @@
-# 开发环境配置 - 只启动基础设施服务，app 和 frontend 在本地运行
+# 개발 환경 설정 - 인프라만 기동, app/frontend는 로컬에서 실행
 services:
-  # 只启动依赖的基础设施服务
+  # 의존 인프라 서비스만 실행
   postgres:
     image: paradedb/paradedb:v0.18.9-pg17
     container_name: WeKnora-postgres-dev
@@ -168,4 +168,3 @@ volumes:
   neo4j-data-dev:
   jaeger_data_dev:
   qdrant_data_dev:
-

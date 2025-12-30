@@ -8,24 +8,24 @@ import (
 )
 
 const (
-	// AliyunChatBaseURL 阿里云 DashScope Chat/Embedding 的默认 BaseURL
+	// AliyunChatBaseURL default BaseURL for Alibaba DashScope Chat/Embedding
 	AliyunChatBaseURL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-	// AliyunRerankBaseURL 阿里云 DashScope Rerank 的默认 BaseURL
+	// AliyunRerankBaseURL default BaseURL for Alibaba DashScope Rerank
 	AliyunRerankBaseURL = "https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank"
 )
 
-// AliyunProvider 实现阿里云 DashScope 的 Provider 接口
+// AliyunProvider implements the Alibaba DashScope provider interface
 type AliyunProvider struct{}
 
 func init() {
 	Register(&AliyunProvider{})
 }
 
-// Info 返回阿里云 provider 的元数据
+// Info returns metadata for the Alibaba provider
 func (p *AliyunProvider) Info() ProviderInfo {
 	return ProviderInfo{
 		Name:        ProviderAliyun,
-		DisplayName: "阿里云 DashScope",
+		DisplayName: "Alibaba DashScope",
 		Description: "qwen-plus, tongyi-embedding-vision-plus, qwen3-rerank, etc.",
 		DefaultURLs: map[types.ModelType]string{
 			types.ModelTypeKnowledgeQA: AliyunChatBaseURL,
@@ -43,7 +43,7 @@ func (p *AliyunProvider) Info() ProviderInfo {
 	}
 }
 
-// ValidateConfig 验证阿里云 provider 配置
+// ValidateConfig validates Alibaba provider config
 func (p *AliyunProvider) ValidateConfig(config *Config) error {
 	if config.APIKey == "" {
 		return fmt.Errorf("API key is required for Aliyun DashScope")
@@ -54,14 +54,12 @@ func (p *AliyunProvider) ValidateConfig(config *Config) error {
 	return nil
 }
 
-// IsQwen3Model 检查模型名是否为 Qwen3 模型
-// Qwen3 模型需要特殊处理 enable_thinking 参数
+// IsQwen3Model checks if model name is Qwen3; needs special enable_thinking handling
 func IsQwen3Model(modelName string) bool {
 	return strings.HasPrefix(modelName, "qwen3-")
 }
 
-// IsDeepSeekModel 检查模型名是否为 DeepSeek 模型
-// DeepSeek 模型不支持 tool_choice 参数
+// IsDeepSeekModel checks if model is DeepSeek; DeepSeek does not support tool_choice
 func IsDeepSeekModel(modelName string) bool {
 	return strings.Contains(strings.ToLower(modelName), "deepseek")
 }

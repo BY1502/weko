@@ -80,13 +80,13 @@ const router = createRouter({
   ],
 });
 
-// 路由守卫：检查认证状态和系统初始化状态
+// 라우터 가드: 인증 상태와 시스템 초기화 상태 확인
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   
-  // 如果访问的是登录页面或初始化页面，直接放行
+  // 로그인/초기화 페이지 접근 시 바로 통과
   if (to.meta.requiresAuth === false || to.meta.requiresInit === false) {
-    // 如果已登录用户访问登录页面，重定向到知识库列表页面
+    // 로그인한 사용자가 로그인 페이지로 접근하면 지식베이스 목록으로 리다이렉트
     if (to.path === '/login' && authStore.isLoggedIn) {
       next('/platform/knowledge-bases')
       return
@@ -95,25 +95,25 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  // 检查用户认证状态
+  // 사용자 인증 상태 확인
   if (to.meta.requiresAuth !== false) {
     if (!authStore.isLoggedIn) {
-      // 未登录，跳转到登录页面
+      // 미로그인 시 로그인 페이지로 이동
       next('/login')
       return
     }
 
-    // 验证Token有效性
+    // 토큰 유효성 검증
     // try {
     //   const { valid } = await validateToken()
     //   if (!valid) {
-    //     // Token无效，清空认证信息并跳转到登录页面
+    //     // 토큰이 무효면 인증 정보를 삭제하고 로그인 페이지로 이동
     //     authStore.logout()
     //     next('/login')
     //     return
     //   }
     // } catch (error) {
-    //   console.error('Token验证失败:', error)
+    //   console.error('토큰 검증 실패:', error)
     //   authStore.logout()
     //   next('/login')
     //   return

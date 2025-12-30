@@ -207,18 +207,18 @@ func (t *DataAnalysisTool) executeSingleQuery(ctx context.Context, sqlQuery stri
 func (t *DataAnalysisTool) formatQueryResults(results []map[string]string, query string) string {
 	var output strings.Builder
 
-	output.WriteString("=== DuckDB 查询结果 ===\n\n")
-	output.WriteString(fmt.Sprintf("执行的SQL: %s\n\n", query))
-	output.WriteString(fmt.Sprintf("返回 %d 行数据\n\n", len(results)))
+	output.WriteString("=== DuckDB 쿼리 결과 ===\n\n")
+	output.WriteString(fmt.Sprintf("실행된 SQL: %s\n\n", query))
+	output.WriteString(fmt.Sprintf("%d 행을 반환\n\n", len(results)))
 
 	if len(results) == 0 {
-		output.WriteString("未找到匹配的记录。\n")
+		output.WriteString("일치하는 레코드가 없습니다.\n")
 		return output.String()
 	}
 
-	output.WriteString("=== 数据详情 ===\n\n")
+	output.WriteString("=== 데이터 상세 ===\n\n")
 	if len(results) > 10 {
-		output.WriteString(fmt.Sprintf("显示了所有 %d 条记录。建议使用 LIMIT 子句限制结果数量以提高性能。\n\n", len(results)))
+		output.WriteString(fmt.Sprintf("모든 %d 개 레코드를 표시했습니다. 성능을 위해 LIMIT 절로 결과 수를 제한하세요.\n\n", len(results)))
 	}
 
 	// Write each record as a separate JSON line
@@ -447,10 +447,10 @@ func (t *DataAnalysisTool) TableName(knowledge *types.Knowledge) string {
 // buildSchemaDescription builds a formatted schema description
 func (t *TableSchema) Description() string {
 	var builder strings.Builder
-	builder.WriteString(fmt.Sprintf("表名: %s\n", t.TableName))
-	builder.WriteString(fmt.Sprintf("列数: %d\n", len(t.Columns)))
-	builder.WriteString(fmt.Sprintf("行数: %d\n\n", t.RowCount))
-	builder.WriteString("列信息:\n")
+	builder.WriteString(fmt.Sprintf("테이블명: %s\n", t.TableName))
+	builder.WriteString(fmt.Sprintf("컬럼 수: %d\n", len(t.Columns)))
+	builder.WriteString(fmt.Sprintf("행 수: %d\n\n", t.RowCount))
+	builder.WriteString("컬럼 정보:\n")
 
 	for _, col := range t.Columns {
 		builder.WriteString(fmt.Sprintf("- %s (%s)\n", col.Name, col.Type))

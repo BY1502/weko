@@ -1,27 +1,27 @@
-# 常见问题
+# 자주 묻는 질문(FAQ)
 
-## 1. 如何查看日志？
+## 1. 로그는 어떻게 보나요?
 ```bash
 docker compose logs -f app docreader postgres
 ```
 
-## 2. 如何启动和停止服务？
+## 2. 서비스를 시작/중지하는 방법은?
 ```bash
-# 启动服务
+# 시작
 ./scripts/start_all.sh
 
-# 停止服务
+# 중지
 ./scripts/start_all.sh --stop
 
-# 清空数据库
+# DB 초기화
 ./scripts/start_all.sh --stop && make clean-db
 ```
 
-## 3. 服务启动后无法正常上传文档？
+## 3. 서비스 기동 후 문서 업로드가 되지 않나요?
 
-通常是Embedding模型和对话模型没有正确被设置导致。按照以下步骤进行排查
+대부분 Embedding/LLM 모델 설정이 누락된 경우입니다. 다음을 확인하세요.
 
-1. 查看`.env`配置中的模型信息是否配置完整，其中如果使用ollama访问本地模型，需要确保本地ollama服务正常运行，同时在`.env`中的如下环境变量需要正确设置:
+1. `.env`의 모델 정보가 모두 채워졌는지 확인. 로컬 ollama를 사용할 경우 서비스가 실행 중인지 확인하고 아래 변수를 올바르게 설정합니다:
 ```bash
 # LLM Model
 INIT_LLM_MODEL_NAME=your_llm_model
@@ -33,7 +33,7 @@ INIT_EMBEDDING_MODEL_DIMENSION=your_embedding_model_dimension
 INIT_EMBEDDING_MODEL_ID=your_embedding_model_id
 ```
 
-如果是通过remote api访问模型，则需要额外提供对应的`BASE_URL`和`API_KEY`:
+원격 API를 통해 모델에 접근한다면 `BASE_URL`과 `API_KEY`도 설정해야 합니다:
 ```bash
 # LLM模型的访问地址
 INIT_LLM_MODEL_BASE_URL=your_llm_model_base_url
@@ -45,7 +45,7 @@ INIT_EMBEDDING_MODEL_BASE_URL=your_embedding_model_base_url
 INIT_EMBEDDING_MODEL_API_KEY=your_embedding_model_api_key
 ```
 
-当需要重排序功能时，需要额外配置Rerank模型，具体配置如下：
+Rerank 기능이 필요하면 Rerank 모델도 설정합니다:
 ```bash
 # 使用的Rerank模型名称
 INIT_RERANK_MODEL_NAME=your_rerank_model_name
@@ -55,10 +55,10 @@ INIT_RERANK_MODEL_BASE_URL=your_rerank_model_base_url
 INIT_RERANK_MODEL_API_KEY=your_rerank_model_api_key
 ```
 
-2. 查看主服务日志，是否有`ERROR`日志输出
+2. 메인 서비스 로그에 `ERROR`가 있는지 확인하세요.
 
-## 4. 如何开启多模态功能？
-1. 确保 `.env` 如下配置被正确设置:
+## 4. 멀티모달 기능을 켜려면?
+1. `.env`에서 아래 설정을 맞춥니다:
 ```bash
 # VLM_MODEL_NAME 使用的多模态模型名称
 VLM_MODEL_NAME=your_vlm_model_name
@@ -69,9 +69,9 @@ VLM_MODEL_BASE_URL=your_vlm_model_base_url
 # VLM_MODEL_API_KEY 使用的多模态模型API密钥
 VLM_MODEL_API_KEY=your_vlm_model_api_key
 ```
-注：多模态大模型当前仅支持remote api访问，固需要提供`VLM_MODEL_BASE_URL`和`VLM_MODEL_API_KEY`
+참고: 멀티모달 모델은 현재 remote API만 지원하므로 `VLM_MODEL_BASE_URL`, `VLM_MODEL_API_KEY`가 필요합니다.
 
-2. 解析后的文件需要上传到COS中，确保 `.env` 中 `COS` 信息正确设置：
+2. 파싱된 파일을 COS에 업로드해야 하므로 `.env`의 COS 설정을 올바르게 입력합니다:
 ```bash
 # 腾讯云COS的访问密钥ID
 COS_SECRET_ID=your_cos_secret_id

@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	// 配置测试日志
+	// Configure test logging
 	log.SetOutput(os.Stdout)
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds | log.Lshortfile)
 	log.Println("INFO: Initializing DocReader client tests")
@@ -20,7 +20,7 @@ func init() {
 func TestReadFromURL(t *testing.T) {
 	log.Println("INFO: Starting TestReadFromURL")
 
-	// 创建测试客户端
+	// Create test client
 	log.Println("INFO: Creating test client")
 	client, err := NewClient("localhost:50051")
 	if err != nil {
@@ -29,10 +29,10 @@ func TestReadFromURL(t *testing.T) {
 	}
 	defer client.Close()
 
-	// 启用调试日志
+	// Enable debug logging
 	client.SetDebug(true)
 
-	// 测试 ReadFromURL 方法
+	// Test ReadFromURL
 	log.Println("INFO: Sending ReadFromURL request to server")
 	startTime := time.Now()
 	resp, err := client.ReadFromURL(
@@ -56,7 +56,7 @@ func TestReadFromURL(t *testing.T) {
 	}
 	log.Printf("INFO: ReadFromURL completed in %v", requestDuration)
 
-	// 验证结果
+	// Validate results
 	chunkCount := len(resp.Chunks)
 	log.Printf("INFO: Received %d chunks from URL parsing", chunkCount)
 	if chunkCount == 0 {
@@ -64,9 +64,9 @@ func TestReadFromURL(t *testing.T) {
 		t.Error("Expected non-empty content")
 	}
 
-	// 打印结果
+	// Print sample results
 	for i, chunk := range resp.Chunks {
-		if i < 2 || i >= chunkCount-2 { // 只打印前两个和后两个块
+		if i < 2 || i >= chunkCount-2 { // print only first two and last two chunks
 			log.Printf("DEBUG: Chunk %d: %s", chunk.Seq, truncateString(chunk.Content, 50))
 		} else if i == 2 && chunkCount > 4 {
 			log.Printf("DEBUG: ... %d more chunks ...", chunkCount-4)
@@ -79,7 +79,7 @@ func TestReadFromURL(t *testing.T) {
 func TestReadFromFileWithChunking(t *testing.T) {
 	log.Println("INFO: Starting TestReadFromFileWithChunking")
 
-	// 创建测试客户端
+	// Create test client
 	log.Println("INFO: Creating test client")
 	client, err := NewClient("localhost:50051")
 	if err != nil {
@@ -88,10 +88,10 @@ func TestReadFromFileWithChunking(t *testing.T) {
 	}
 	defer client.Close()
 
-	// 启用调试日志
+	// Enable debug logging
 	client.SetDebug(true)
 
-	// 读取测试文件
+	// Read test file
 	log.Println("INFO: Reading test file")
 	fileContent, err := os.ReadFile("../testdata/test.md")
 	if err != nil {
@@ -100,7 +100,7 @@ func TestReadFromFileWithChunking(t *testing.T) {
 	}
 	log.Printf("INFO: Read test file, size: %d bytes", len(fileContent))
 
-	// 测试 ReadFromFile 方法，带分块参数
+	// Test ReadFromFile with chunk parameters
 	log.Println("INFO: Sending ReadFromFile request to server")
 	startTime := time.Now()
 	resp, err := client.ReadFromFile(
@@ -125,7 +125,7 @@ func TestReadFromFileWithChunking(t *testing.T) {
 	}
 	log.Printf("INFO: ReadFromFile completed in %v", requestDuration)
 
-	// 验证结果
+	// Validate results
 	chunkCount := len(resp.Chunks)
 	log.Printf("INFO: Received %d chunks from file parsing", chunkCount)
 	if chunkCount == 0 {
@@ -133,9 +133,9 @@ func TestReadFromFileWithChunking(t *testing.T) {
 		t.Error("Expected non-empty content")
 	}
 
-	// 打印结果
+	// Print sample results
 	for i, chunk := range resp.Chunks {
-		if i < 2 || i >= chunkCount-2 { // 只打印前两个和后两个块
+		if i < 2 || i >= chunkCount-2 { // print only first two and last two chunks
 			log.Printf("DEBUG: Chunk %d: %s", chunk.Seq, truncateString(chunk.Content, 50))
 		} else if i == 2 && chunkCount > 4 {
 			log.Printf("DEBUG: ... %d more chunks ...", chunkCount-4)
@@ -145,7 +145,7 @@ func TestReadFromFileWithChunking(t *testing.T) {
 	log.Println("INFO: TestReadFromFileWithChunking completed successfully")
 }
 
-// 截断字符串以供日志打印
+// Truncate string for logging
 func truncateString(s string, maxLen int) string {
 	if len(s) <= maxLen {
 		return s

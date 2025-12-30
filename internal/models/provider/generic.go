@@ -17,7 +17,7 @@ func init() {
 func (p *GenericProvider) Info() ProviderInfo {
 	return ProviderInfo{
 		Name:        ProviderGeneric,
-		DisplayName: "自定义 (OpenAI格式兼容接口)",
+		DisplayName: "Custom (OpenAI-compatible)",
 		Description: "Generic API endpoint",
 		DefaultURLs: map[types.ModelType]string{}, // 需要用户自行配置填写
 		ModelTypes: []types.ModelType{

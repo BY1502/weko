@@ -27,16 +27,16 @@ type AvailableTool struct {
 // Keep this in sync with registered tools in this package.
 func AvailableToolDefinitions() []AvailableTool {
 	return []AvailableTool{
-		{Name: ToolThinking, Label: "思考", Description: "动态和反思性的问题解决思考工具"},
-		{Name: ToolTodoWrite, Label: "制定计划", Description: "创建结构化的研究计划"},
-		{Name: ToolGrepChunks, Label: "关键词搜索", Description: "快速定位包含特定关键词的文档和分块"},
-		{Name: ToolKnowledgeSearch, Label: "语义搜索", Description: "理解问题并查找语义相关内容"},
-		{Name: ToolListKnowledgeChunks, Label: "查看文档分块", Description: "获取文档完整分块内容"},
-		{Name: ToolQueryKnowledgeGraph, Label: "查询知识图谱", Description: "从知识图谱中查询关系"},
-		{Name: ToolGetDocumentInfo, Label: "获取文档信息", Description: "查看文档元数据"},
-		{Name: ToolDatabaseQuery, Label: "查询数据库", Description: "查询数据库中的信息"},
-		{Name: ToolDataAnalysis, Label: "数据分析", Description: "理解数据文件并进行数据分析"},
-		{Name: ToolDataSchema, Label: "查看数据元信息", Description: "获取表格文件的元信息"},
+		{Name: ToolThinking, Label: "생각하기", Description: "동적·반성적 문제 해결을 위한 사고 도구"},
+		{Name: ToolTodoWrite, Label: "계획 수립", Description: "구조화된 리서치 계획을 작성"},
+		{Name: ToolGrepChunks, Label: "키워드 검색", Description: "특정 키워드를 포함한 문서/분할을 빠르게 찾기"},
+		{Name: ToolKnowledgeSearch, Label: "의미 검색", Description: "질문을 이해하고 의미적으로 연관된 내용을 탐색"},
+		{Name: ToolListKnowledgeChunks, Label: "문서 분할 보기", Description: "문서의 전체 분할 콘텐츠를 확인"},
+		{Name: ToolQueryKnowledgeGraph, Label: "지식 그래프 조회", Description: "지식 그래프에서 관계를 조회"},
+		{Name: ToolGetDocumentInfo, Label: "문서 정보 조회", Description: "문서 메타데이터 확인"},
+		{Name: ToolDatabaseQuery, Label: "데이터베이스 쿼리", Description: "데이터베이스 정보를 조회"},
+		{Name: ToolDataAnalysis, Label: "데이터 분석", Description: "데이터 파일을 이해하고 분석"},
+		{Name: ToolDataSchema, Label: "데이터 메타정보", Description: "테이블 파일의 메타정보 조회"},
 	}
 }
 

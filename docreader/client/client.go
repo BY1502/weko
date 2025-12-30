@@ -27,14 +27,14 @@ func getMaxMessageSize() int {
 // Logger is the default logger used by the client
 var Logger = log.New(os.Stdout, "[DocReader] ", log.LstdFlags|log.Lmicroseconds)
 
-// ImageInfo 表示一个图片的信息
+// ImageInfo represents image metadata
 type ImageInfo struct {
-	URL         string // 图片URL（COS）
-	Caption     string // 图片描述
-	OCRText     string // OCR提取的文本
-	OriginalURL string // 原始图片URL
-	Start       int    // 图片在文本中的开始位置
-	End         int    // 图片在文本中的结束位置
+	URL         string // Image URL (e.g., COS)
+	Caption     string // Image description
+	OCRText     string // OCR-extracted text
+	OriginalURL string // Original image URL
+	Start       int    // Start position in text
+	End         int    // End position in text
 }
 
 // Client represents a DocReader service client
@@ -48,7 +48,7 @@ type Client struct {
 func NewClient(addr string) (*Client, error) {
 	Logger.Printf("INFO: Creating new DocReader client connecting to %s", addr)
 
-	// 设置消息大小限制 (configurable via GRPC_MAX_MESSAGE_SIZE_MB)
+	// Set message size limit (configurable via GRPC_MAX_MESSAGE_SIZE_MB)
 	maxMsgSize := getMaxMessageSize()
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -95,7 +95,7 @@ func (c *Client) Log(level string, format string, args ...interface{}) {
 	Logger.Printf("%s: %s", level, fmt.Sprintf(format, args...))
 }
 
-// GetImagesFromChunk 从一个Chunk中提取所有图片信息
+// GetImagesFromChunk extracts all image info from a chunk
 func GetImagesFromChunk(chunk *proto.Chunk) []ImageInfo {
 	if chunk == nil || len(chunk.Images) == 0 {
 		return nil
@@ -116,7 +116,7 @@ func GetImagesFromChunk(chunk *proto.Chunk) []ImageInfo {
 	return images
 }
 
-// HasImagesInChunk 判断一个Chunk是否包含图片
+// HasImagesInChunk returns true if chunk contains images
 func HasImagesInChunk(chunk *proto.Chunk) bool {
 	return chunk != nil && len(chunk.Images) > 0
 }

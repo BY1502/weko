@@ -57,7 +57,7 @@ If KB is not configured with graph, tool will return regular search results.
 // QueryKnowledgeGraphInput defines the input parameters for query knowledge graph tool
 type QueryKnowledgeGraphInput struct {
 	KnowledgeBaseIDs []string `json:"knowledge_base_ids" jsonschema:"Array of knowledge base IDs to query"`
-	Query            string   `json:"query" jsonschema:"查询内容（实体名称或查询文本）"`
+	Query            string   `json:"query" jsonschema:"조회할 내용(엔티티명 또는 질의 텍스트)"`
 }
 
 // QueryKnowledgeGraphTool queries the knowledge graph for entities and relationships
@@ -135,7 +135,7 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 			kb, err := t.knowledgeService.GetKnowledgeBaseByID(ctx, id)
 			if err != nil {
 				mu.Lock()
-				kbResults[id] = &graphQueryResult{kbID: id, err: fmt.Errorf("获取知识库失败: %v", err)}
+				kbResults[id] = &graphQueryResult{kbID: id, err: fmt.Errorf("지식베이스를 가져오지 못했습니다: %v", err)}
 				mu.Unlock()
 				return
 			}
@@ -143,7 +143,7 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 			// Check if graph extraction is enabled
 			if kb.ExtractConfig == nil || (len(kb.ExtractConfig.Nodes) == 0 && len(kb.ExtractConfig.Relations) == 0) {
 				mu.Lock()
-				kbResults[id] = &graphQueryResult{kbID: id, err: fmt.Errorf("未配置知识图谱抽取")}
+				kbResults[id] = &graphQueryResult{kbID: id, err: fmt.Errorf("지식 그래프 추출이 설정되지 않았습니다")}
 				mu.Unlock()
 				return
 			}
@@ -152,7 +152,7 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 			results, err := t.knowledgeService.HybridSearch(ctx, id, searchParams)
 			if err != nil {
 				mu.Lock()
-				kbResults[id] = &graphQueryResult{kbID: id, kb: kb, err: fmt.Errorf("查询失败: %v", err)}
+				kbResults[id] = &graphQueryResult{kbID: id, kb: kb, err: fmt.Errorf("검색 실패: %v", err)}
 				mu.Unlock()
 				return
 			}
@@ -206,7 +206,7 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 	if len(allResults) == 0 {
 		return &types.ToolResult{
 			Success: true,
-			Output:  "未找到相关的图谱信息。",
+			Output:  "관련된 그래프 정보를 찾지 못했습니다.",
 			Data: map[string]interface{}{
 				"knowledge_base_ids": input.KnowledgeBaseIDs,
 				"query":              query,
@@ -218,13 +218,13 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 	}
 
 	// Format output with enhanced graph information
-	output := "=== 知识图谱查询 ===\n\n"
-	output += fmt.Sprintf("📊 查询: %s\n", query)
-	output += fmt.Sprintf("🎯 目标知识库: %v\n", input.KnowledgeBaseIDs)
-	output += fmt.Sprintf("✓ 找到 %d 条相关结果（已去重）\n\n", len(allResults))
+	output := "=== 지식 그래프 조회 ===\n\n"
+	output += fmt.Sprintf("📊 질의: %s\n", query)
+	output += fmt.Sprintf("🎯 대상 지식베이스: %v\n", input.KnowledgeBaseIDs)
+	output += fmt.Sprintf("✓ 관련 결과 %d개 발견(중복 제거)\n\n", len(allResults))
 
 	if len(errors) > 0 {
-		output += "=== ⚠️ 部分失败 ===\n"
+		output += "=== ⚠️ 일부 실패 ===\n"
 		for _, errMsg := range errors {
 			output += fmt.Sprintf("  - %s\n", errMsg)
 		}
@@ -233,16 +233,16 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 
 	// Display graph configuration status
 	hasGraphConfig := false
-	output += "=== 📈 图谱配置状态 ===\n\n"
+	output += "=== 📈 그래프 설정 상태 ===\n\n"
 	for kbID, config := range graphConfigs {
 		hasGraphConfig = true
-		output += fmt.Sprintf("知识库【%s】:\n", kbID)
+		output += fmt.Sprintf("지식베이스 [%s]:\n", kbID)
 
 		nodes, _ := config["nodes"].([]interface{})
 		relations, _ := config["relations"].([]interface{})
 
 		if len(nodes) > 0 {
-			output += fmt.Sprintf("  ✓ 实体类型 (%d): ", len(nodes))
+			output += fmt.Sprintf("  ✓ 엔티티 타입 (%d): ", len(nodes))
 			nodeNames := make([]string, 0, len(nodes))
 			for _, n := range nodes {
 				if nodeMap, ok := n.(map[string]interface{}); ok {
@@ -253,11 +253,11 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 			}
 			output += fmt.Sprintf("%v\n", nodeNames)
 		} else {
-			output += "  ⚠️ 未配置实体类型\n"
+			output += "  ⚠️ 엔티티 타입 미설정\n"
 		}
 
 		if len(relations) > 0 {
-			output += fmt.Sprintf("  ✓ 关系类型 (%d): ", len(relations))
+			output += fmt.Sprintf("  ✓ 관계 타입 (%d): ", len(relations))
 			relNames := make([]string, 0, len(relations))
 			for _, r := range relations {
 				if relMap, ok := r.(map[string]interface{}); ok {
@@ -268,31 +268,31 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 			}
 			output += fmt.Sprintf("%v\n", relNames)
 		} else {
-			output += "  ⚠️ 未配置关系类型\n"
+			output += "  ⚠️ 관계 타입 미설정\n"
 		}
 		output += "\n"
 	}
 
 	if !hasGraphConfig {
-		output += "⚠️ 所查询的知识库均未配置图谱抽取\n"
-		output += "💡 提示: 需要在知识库设置中配置实体和关系类型\n\n"
+		output += "⚠️ 조회한 지식베이스 모두 그래프 추출이 설정되지 않았습니다\n"
+		output += "💡 안내: 지식베이스 설정에서 엔티티/관계 타입을 구성하세요\n\n"
 	}
 
 	// Display result counts by KB
 	if len(kbCounts) > 0 {
-		output += "=== 📚 知识库覆盖 ===\n"
+		output += "=== 📚 지식베이스 커버리지 ===\n"
 		for kbID, count := range kbCounts {
-			output += fmt.Sprintf("  - %s: %d 条结果\n", kbID, count)
+			output += fmt.Sprintf("  - %s: %d개 결과\n", kbID, count)
 		}
 		output += "\n"
 	}
 
 	// Display search results
-	output += "=== 🔍 查询结果 ===\n\n"
+	output += "=== 🔍 조회 결과 ===\n\n"
 	if !hasGraphConfig {
-		output += "💡 当前返回相关文档片段（知识库未配置图谱）\n\n"
+		output += "💡 그래프가 없으므로 관련 문서 조각을 반환합니다\n\n"
 	} else {
-		output += "💡 基于图谱配置的相关内容检索\n\n"
+		output += "💡 그래프 설정을 기반으로 관련 내용을 반환합니다\n\n"
 	}
 
 	formattedResults := make([]map[string]interface{}, 0, len(allResults))
@@ -305,15 +305,15 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 			if i > 0 {
 				output += "\n"
 			}
-			output += fmt.Sprintf("【来源文档: %s】\n\n", result.KnowledgeTitle)
+			output += fmt.Sprintf("【출처 문서: %s】\n\n", result.KnowledgeTitle)
 		}
 
 		relevanceLevel := GetRelevanceLevel(result.Score)
 
-		output += fmt.Sprintf("结果 #%d:\n", i+1)
-		output += fmt.Sprintf("  📍 相关度: %.2f (%s)\n", result.Score, relevanceLevel)
-		output += fmt.Sprintf("  🔗 匹配方式: %s\n", FormatMatchType(result.MatchType))
-		output += fmt.Sprintf("  📄 内容: %s\n", result.Content)
+		output += fmt.Sprintf("결과 #%d:\n", i+1)
+		output += fmt.Sprintf("  📍 관련도: %.2f (%s)\n", result.Score, relevanceLevel)
+		output += fmt.Sprintf("  🔗 매칭 방식: %s\n", FormatMatchType(result.MatchType))
+		output += fmt.Sprintf("  📄 내용: %s\n", result.Content)
 		output += fmt.Sprintf("  🆔 chunk_id: %s\n\n", result.ID)
 
 		formattedResults = append(formattedResults, map[string]interface{}{
@@ -328,14 +328,14 @@ func (t *QueryKnowledgeGraphTool) Execute(ctx context.Context, args json.RawMess
 		})
 	}
 
-	output += "=== 💡 使用提示 ===\n"
-	output += "- ✓ 结果已跨知识库去重并按相关度排序\n"
-	output += "- ✓ 使用 get_chunk_detail 获取完整内容\n"
-	output += "- ✓ 使用 list_knowledge_chunks 探索上下文\n"
+	output += "=== 💡 사용 팁 ===\n"
+	output += "- ✓ 결과는 지식베이스 간 중복을 제거하고 관련도 순으로 정렬됨\n"
+	output += "- ✓ get_chunk_detail 로 전체 내용을 조회\n"
+	output += "- ✓ list_knowledge_chunks 로 문맥을 확장\n"
 	if !hasGraphConfig {
-		output += "- ⚠️ 配置图谱抽取以获得更精准的实体关系结果\n"
+		output += "- ⚠️ 그래프 추출을 설정하면 더 정확한 엔티티 관계 결과를 얻을 수 있음\n"
 	}
-	output += "- ⏳ 完整的图查询语言（Cypher）支持开发中\n"
+	output += "- ⏳ 완전한 그래프 질의 언어(Cypher) 지원은 개발 중\n"
 
 	// Build structured graph data for frontend visualization
 	graphData := buildGraphVisualizationData(allResults, graphConfigs)

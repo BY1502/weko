@@ -1,6 +1,6 @@
 import { MessagePlugin } from "tdesign-vue-next";
 
-// 从环境变量获取最大文件大小(MB)，默认30MB
+// 환경 변수에서 최대 파일 크기(MB)를 가져옵니다. 기본값 50MB
 const MAX_FILE_SIZE_MB = Number(import.meta.env.VITE_MAX_FILE_SIZE_MB) || 50;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
@@ -32,7 +32,7 @@ export function kbFileTypeVerification(file: any, silent = false) {
   let type = file.name.substring(file.name.lastIndexOf(".") + 1);
   if (!validTypes.includes(type)) {
     if (!silent) {
-      MessagePlugin.error("文件类型错误！");
+      MessagePlugin.error("지원하지 않는 파일 형식입니다!");
     }
     return true;
   }
@@ -41,13 +41,13 @@ export function kbFileTypeVerification(file: any, silent = false) {
     file.size > MAX_FILE_SIZE_BYTES
   ) {
     if (!silent) {
-      MessagePlugin.error(`pdf/doc文件不能超过${MAX_FILE_SIZE_MB}M！`);
+      MessagePlugin.error(`pdf/doc 파일은 ${MAX_FILE_SIZE_MB}M를 초과할 수 없습니다!`);
     }
     return true;
   }
   if ((type == "txt" || type == "md") && file.size > MAX_FILE_SIZE_BYTES) {
     if (!silent) {
-      MessagePlugin.error(`txt/md文件不能超过${MAX_FILE_SIZE_MB}M！`);
+      MessagePlugin.error(`txt/md 파일은 ${MAX_FILE_SIZE_MB}M를 초과할 수 없습니다!`);
     }
     return true;
   }

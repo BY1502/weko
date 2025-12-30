@@ -454,7 +454,7 @@ const delCard = (index: number, item: any) => {
                 total.value--;
             }
         } else {
-            MessagePlugin.error("删除失败，请稍后再试!");
+            MessagePlugin.error("삭제에 실패했습니다. 잠시 후 다시 시도해주세요!");
         }
     })
 }
@@ -494,7 +494,7 @@ const getMessageList = async (isLoadMore = false) => {
             // Display all sessions globally without filtering
             res.data.forEach((item: any) => {
                 let obj = { 
-                    title: item.title ? item.title : "新会话", 
+                    title: item.title ? item.title : "새 대화", 
                     path: `chat/${item.id}`, 
                     id: item.id, 
                     isMore: false, 

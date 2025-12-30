@@ -96,7 +96,7 @@ func (c *OllamaChat) Chat(ctx context.Context, messages []Message, opts *ChatOpt
 	chatReq := c.buildChatRequest(messages, opts, false)
 
 	// 记录请求日志
-	logger.GetLogger(ctx).Infof("发送聊天请求到模型 %s", c.modelName)
+	logger.GetLogger(ctx).Infof("모델 %s로 채팅 요청을 전송합니다", c.modelName)
 
 	var responseContent string
 	var toolCalls []types.LLMToolCall
@@ -116,7 +116,7 @@ func (c *OllamaChat) Chat(ctx context.Context, messages []Message, opts *ChatOpt
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("聊天请求失败: %w", err)
+		return nil, fmt.Errorf("채팅 요청에 실패했습니다: %w", err)
 	}
 
 	// 构建响应
@@ -150,7 +150,7 @@ func (c *OllamaChat) ChatStream(
 	chatReq := c.buildChatRequest(messages, opts, true)
 
 	// 记录请求日志
-	logger.GetLogger(ctx).Infof("发送流式聊天请求到模型 %s", c.modelName)
+	logger.GetLogger(ctx).Infof("모델 %s로 스트리밍 채팅 요청을 전송합니다", c.modelName)
 
 	// 创建流式响应通道
 	streamChan := make(chan types.StreamResponse)
@@ -186,7 +186,7 @@ func (c *OllamaChat) ChatStream(
 			return nil
 		})
 		if err != nil {
-			logger.GetLogger(ctx).Errorf("流式聊天请求失败: %v", err)
+			logger.GetLogger(ctx).Errorf("스트리밍 채팅 요청 실패: %v", err)
 			// 发送错误响应
 			streamChan <- types.StreamResponse{
 				ResponseType: types.ResponseTypeAnswer,
@@ -200,7 +200,7 @@ func (c *OllamaChat) ChatStream(
 
 // 确保模型可用
 func (c *OllamaChat) ensureModelAvailable(ctx context.Context) error {
-	logger.GetLogger(ctx).Infof("确保模型 %s 可用", c.modelName)
+	logger.GetLogger(ctx).Infof("모델 %s가 사용 가능한지 확인합니다", c.modelName)
 	return c.ollamaService.EnsureModelAvailable(ctx, c.modelName)
 }
 

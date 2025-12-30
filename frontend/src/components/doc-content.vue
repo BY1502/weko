@@ -30,7 +30,7 @@ onMounted(() => {
     doc = document.getElementsByClassName('t-drawer__body')[0]
     doc.addEventListener('scroll', handleDetailsScroll);
   })
-  // 提供全局复制方法，供代码块按钮使用
+  // 코드 블록 복사 버튼에서 사용할 전역 복사 메서드를 제공
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   window.copyCodeBlock = (codeId: string) => {
@@ -38,9 +38,9 @@ onMounted(() => {
     if (!el) return;
     const text = el.innerText || '';
     navigator.clipboard?.writeText(text).then(() => {
-      MessagePlugin.success(t('common.copySuccess') || '复制成功');
+      MessagePlugin.success(t('common.copySuccess') || '복사했습니다');
     }).catch(() => {
-      MessagePlugin.error(t('common.copyFailed') || '复制失败');
+      MessagePlugin.error(t('common.copyFailed') || '복사에 실패했습니다');
     });
   };
 })
@@ -75,7 +75,7 @@ renderer.image = function (href, title, text) {
             </figure>`;
 };
 
-// 自定义代码块渲染器，添加语言标签与复制按钮
+// 언어 태그와 복사 버튼을 추가한 커스텀 코드블록 렌더러
 renderer.code = function (code, infostring) {
   const lang = (infostring || '').trim();
   let detectedLang = lang;
@@ -98,8 +98,8 @@ renderer.code = function (code, infostring) {
     <div class="code-block-wrapper" data-code-id="${codeId}">
       <div class="code-block-header">
         <span class="code-block-lang">${displayLang}</span>
-        <button class="code-block-copy-btn" onclick="window.copyCodeBlock && window.copyCodeBlock('${codeId}')" title="${t('common.copy') || '复制'}">
-          ${t('common.copy') || '复制'}
+        <button class="code-block-copy-btn" onclick="window.copyCodeBlock && window.copyCodeBlock('${codeId}')" title="${t('common.copy') || '복사'}">
+          ${t('common.copy') || '복사'}
         </button>
       </div>
       <pre class="code-block-pre"><code class="hljs language-${detectedLang || ''}" id="${codeId}">${highlighted}</code></pre>

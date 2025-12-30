@@ -6,7 +6,7 @@ pip install pandas pyarrow
 pip install openai
 ```
 
-# 采样数据
+# 샘플링 예시
 python dataset/qa_dataset.py sample \
   --queries ~/dataset/mmarco-queries.parquet \
   --corpus ~/dataset/mmarco-corpus.parquet \
@@ -14,12 +14,12 @@ python dataset/qa_dataset.py sample \
   --nq 100 \
   --output_dir ./dataset/samples
 
-# 生成答案(基于采样结果)
+# 답변 생성(샘플 기반)
 python dataset/qa_dataset.py generate \
   --input_dir ./dataset/samples \
   --output_dir ./dataset/samples
 
-# 展示结果
+# 결과 표시
 python dataset/qa_dataset.py show \
   --input_dir ./dataset/samples \
   -n 1
