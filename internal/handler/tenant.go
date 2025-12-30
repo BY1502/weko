@@ -41,14 +41,14 @@ func NewTenantHandler(service interfaces.TenantService, userService interfaces.U
 }
 
 // CreateTenant godoc
-// @Summary      创建租户
-// @Description  创建新的租户
-// @Tags         租户管理
+// @Summary      테넌트 생성
+// @Description  새 테넌트를 생성합니다
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Param        request  body      types.Tenant  true  "租户信息"
-// @Success      201      {object}  map[string]interface{}  "创建的租户"
-// @Failure      400      {object}  errors.AppError         "请求参数错误"
+// @Param        request  body      types.Tenant  true  "테넌트 정보"
+// @Success      201      {object}  map[string]interface{}  "생성된 테넌트"
+// @Failure      400      {object}  errors.AppError         "잘못된 요청"
 // @Security     Bearer
 // @Router       /tenants [post]
 func (h *TenantHandler) CreateTenant(c *gin.Context) {
@@ -92,15 +92,15 @@ func (h *TenantHandler) CreateTenant(c *gin.Context) {
 }
 
 // GetTenant godoc
-// @Summary      获取租户详情
-// @Description  根据ID获取租户详情
-// @Tags         租户管理
+// @Summary      테넌트 상세 조회
+// @Description  ID로 테넌트 상세 정보를 가져옵니다
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Param        id   path      int  true  "租户ID"
-// @Success      200  {object}  map[string]interface{}  "租户详情"
-// @Failure      400  {object}  errors.AppError         "请求参数错误"
-// @Failure      404  {object}  errors.AppError         "租户不存在"
+// @Param        id   path      int  true  "테넌트 ID"
+// @Success      200  {object}  map[string]interface{}  "테넌트 상세"
+// @Failure      400  {object}  errors.AppError         "잘못된 요청"
+// @Failure      404  {object}  errors.AppError         "테넌트 없음"
 // @Security     Bearer
 // @Security     ApiKeyAuth
 // @Router       /tenants/{id} [get]
@@ -134,15 +134,15 @@ func (h *TenantHandler) GetTenant(c *gin.Context) {
 }
 
 // UpdateTenant godoc
-// @Summary      更新租户
-// @Description  更新租户信息
-// @Tags         租户管理
+// @Summary      테넌트 업데이트
+// @Description  테넌트 정보를 수정합니다
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Param        id       path      int           true  "租户ID"
-// @Param        request  body      types.Tenant  true  "租户信息"
-// @Success      200      {object}  map[string]interface{}  "更新后的租户"
-// @Failure      400      {object}  errors.AppError         "请求参数错误"
+// @Param        id       path      int           true  "테넌트 ID"
+// @Param        request  body      types.Tenant  true  "테넌트 정보"
+// @Success      200      {object}  map[string]interface{}  "업데이트된 테넌트"
+// @Failure      400      {object}  errors.AppError         "잘못된 요청"
 // @Security     Bearer
 // @Router       /tenants/{id} [put]
 func (h *TenantHandler) UpdateTenant(c *gin.Context) {
@@ -193,14 +193,14 @@ func (h *TenantHandler) UpdateTenant(c *gin.Context) {
 }
 
 // DeleteTenant godoc
-// @Summary      删除租户
-// @Description  删除指定的租户
-// @Tags         租户管理
+// @Summary      테넌트 삭제
+// @Description  지정한 테넌트를 삭제합니다
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Param        id   path      int  true  "租户ID"
-// @Success      200  {object}  map[string]interface{}  "删除成功"
-// @Failure      400  {object}  errors.AppError         "请求参数错误"
+// @Param        id   path      int  true  "테넌트 ID"
+// @Success      200  {object}  map[string]interface{}  "삭제 완료"
+// @Failure      400  {object}  errors.AppError         "잘못된 요청"
 // @Security     Bearer
 // @Router       /tenants/{id} [delete]
 func (h *TenantHandler) DeleteTenant(c *gin.Context) {
@@ -237,13 +237,13 @@ func (h *TenantHandler) DeleteTenant(c *gin.Context) {
 }
 
 // ListTenants godoc
-// @Summary      获取租户列表
-// @Description  获取当前用户可访问的租户列表
-// @Tags         租户管理
+// @Summary      테넌트 목록 조회
+// @Description  현재 사용자가 접근할 수 있는 테넌트 목록을 가져옵니다
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  map[string]interface{}  "租户列表"
-// @Failure      500  {object}  errors.AppError         "服务器错误"
+// @Success      200  {object}  map[string]interface{}  "테넌트 목록"
+// @Failure      500  {object}  errors.AppError         "서버 오류"
 // @Security     Bearer
 // @Router       /tenants [get]
 func (h *TenantHandler) ListTenants(c *gin.Context) {
@@ -271,13 +271,13 @@ func (h *TenantHandler) ListTenants(c *gin.Context) {
 }
 
 // ListAllTenants godoc
-// @Summary      获取所有租户列表
-// @Description  获取系统中所有租户（需要跨租户访问权限）
-// @Tags         租户管理
+// @Summary      전체 테넌트 목록
+// @Description  시스템의 모든 테넌트를 조회합니다(테넌트 간 접근 권한 필요)
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  map[string]interface{}  "所有租户列表"
-// @Failure      403  {object}  errors.AppError         "权限不足"
+// @Success      200  {object}  map[string]interface{}  "전체 테넌트 목록"
+// @Failure      403  {object}  errors.AppError         "권한 부족"
 // @Security     Bearer
 // @Router       /tenants/all [get]
 func (h *TenantHandler) ListAllTenants(c *gin.Context) {
@@ -327,17 +327,17 @@ func (h *TenantHandler) ListAllTenants(c *gin.Context) {
 }
 
 // SearchTenants godoc
-// @Summary      搜索租户
-// @Description  分页搜索租户（需要跨租户访问权限）
-// @Tags         租户管理
+// @Summary      테넌트 검색
+// @Description  테넌트를 페이지 단위로 검색합니다(테넌트 간 접근 권한 필요)
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Param        keyword    query     string  false  "搜索关键词"
-// @Param        tenant_id  query     int     false  "租户ID筛选"
-// @Param        page       query     int     false  "页码"  default(1)
-// @Param        page_size  query     int     false  "每页数量"  default(20)
-// @Success      200        {object}  map[string]interface{}  "搜索结果"
-// @Failure      403        {object}  errors.AppError         "权限不足"
+// @Param        keyword    query     string  false  "검색 키워드"
+// @Param        tenant_id  query     int     false  "테넌트 ID 필터"
+// @Param        page       query     int     false  "페이지"  default(1)
+// @Param        page_size  query     int     false  "페이지 크기"  default(20)
+// @Success      200        {object}  map[string]interface{}  "검색 결과"
+// @Failure      403        {object}  errors.AppError         "권한 부족"
 // @Security     Bearer
 // @Security     ApiKeyAuth
 // @Router       /tenants/search [get]
@@ -427,13 +427,13 @@ type AgentConfigRequest struct {
 }
 
 // GetTenantAgentConfig godoc
-// @Summary      获取租户Agent配置
-// @Description  获取租户的全局Agent配置（默认应用于所有会话）
-// @Tags         租户管理
+// @Summary      테넌트 Agent 설정 조회
+// @Description  테넌트의 전역 Agent 설정을 가져옵니다(모든 세션에 기본 적용)
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  map[string]interface{}  "Agent配置"
-// @Failure      400  {object}  errors.AppError         "请求参数错误"
+// @Success      200  {object}  map[string]interface{}  "Agent 설정"
+// @Failure      400  {object}  errors.AppError         "잘못된 요청"
 // @Security     Bearer
 // @Security     ApiKeyAuth
 // @Router       /tenants/kv/agent-config [get]
@@ -445,7 +445,7 @@ func (h *TenantHandler) GetTenantAgentConfig(c *gin.Context) {
 		c.Error(errors.NewBadRequestError("Tenant is empty"))
 		return
 	}
-	// 从 tools 包集中配置可用工具列表
+	// tools 패키지에서 사용 가능한 도구 리스트를 취합
 	availableTools := make([]gin.H, 0)
 	for _, t := range agenttools.AvailableToolDefinitions() {
 		availableTools = append(availableTools, gin.H{
@@ -455,7 +455,7 @@ func (h *TenantHandler) GetTenantAgentConfig(c *gin.Context) {
 		})
 	}
 
-	// 从 agent 包获取占位符定义
+	// agent 패키지에서 플레이스홀더 정의를 가져옴
 	availablePlaceholders := make([]gin.H, 0)
 	for _, p := range agent.AvailablePlaceholders() {
 		availablePlaceholders = append(availablePlaceholders, gin.H{
@@ -571,14 +571,14 @@ func (h *TenantHandler) updateTenantAgentConfigInternal(c *gin.Context) {
 }
 
 // GetTenantKV godoc
-// @Summary      获取租户KV配置
-// @Description  获取租户级别的KV配置（支持agent-config、web-search-config、conversation-config）
-// @Tags         租户管理
+// @Summary      테넌트 KV 설정 조회
+// @Description  테넌트 수준 KV 설정을 가져옵니다(agent-config, web-search-config, conversation-config 지원)
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Param        key  path      string  true  "配置键名"
-// @Success      200  {object}  map[string]interface{}  "配置值"
-// @Failure      400  {object}  errors.AppError         "不支持的键"
+// @Param        key  path      string  true  "설정 키"
+// @Success      200  {object}  map[string]interface{}  "설정 값"
+// @Failure      400  {object}  errors.AppError         "지원하지 않는 키"
 // @Security     Bearer
 // @Security     ApiKeyAuth
 // @Router       /tenants/kv/{key} [get]
@@ -607,15 +607,15 @@ func (h *TenantHandler) GetTenantKV(c *gin.Context) {
 }
 
 // UpdateTenantKV godoc
-// @Summary      更新租户KV配置
-// @Description  更新租户级别的KV配置（支持agent-config、web-search-config、conversation-config）
-// @Tags         租户管理
+// @Summary      테넌트 KV 설정 업데이트
+// @Description  테넌트 수준 KV 설정을 수정합니다(agent-config, web-search-config, conversation-config 지원)
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Param        key      path      string  true  "配置键名"
-// @Param        request  body      object  true  "配置值"
-// @Success      200      {object}  map[string]interface{}  "更新成功"
-// @Failure      400      {object}  errors.AppError         "不支持的键"
+// @Param        key      path      string  true  "설정 키"
+// @Param        request  body      object  true  "설정 값"
+// @Success      200      {object}  map[string]interface{}  "업데이트 완료"
+// @Failure      400      {object}  errors.AppError         "지원하지 않는 키"
 // @Security     Bearer
 // @Security     ApiKeyAuth
 // @Router       /tenants/kv/{key} [put]
@@ -685,13 +685,13 @@ func (h *TenantHandler) updateTenantWebSearchConfigInternal(c *gin.Context) {
 }
 
 // GetTenantWebSearchConfig godoc
-// @Summary      获取租户网络搜索配置
-// @Description  获取租户的网络搜索配置
-// @Tags         租户管理
+// @Summary      테넌트 웹 검색 설정 조회
+// @Description  테넌트의 웹 검색 설정을 가져옵니다
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  map[string]interface{}  "网络搜索配置"
-// @Failure      400  {object}  errors.AppError         "请求参数错误"
+// @Success      200  {object}  map[string]interface{}  "웹 검색 설정"
+// @Failure      400  {object}  errors.AppError         "잘못된 요청"
 // @Security     Bearer
 // @Security     ApiKeyAuth
 // @Router       /tenants/kv/web-search-config [get]
@@ -769,13 +769,13 @@ func validateConversationConfig(req *types.ConversationConfig) error {
 }
 
 // GetTenantConversationConfig godoc
-// @Summary      获取租户对话配置
-// @Description  获取租户的全局对话配置（默认应用于普通模式会话）
-// @Tags         租户管理
+// @Summary      테넌트 대화 설정 조회
+// @Description  테넌트의 전역 대화 설정을 가져옵니다(일반 모드 세션에 기본 적용)
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  map[string]interface{}  "对话配置"
-// @Failure      400  {object}  errors.AppError         "请求参数错误"
+// @Success      200  {object}  map[string]interface{}  "대화 설정"
+// @Failure      400  {object}  errors.AppError         "잘못된 요청"
 // @Security     Bearer
 // @Security     ApiKeyAuth
 // @Router       /tenants/kv/conversation-config [get]
@@ -849,13 +849,13 @@ func (h *TenantHandler) updateTenantConversationInternal(c *gin.Context) {
 }
 
 // GetPromptTemplates godoc
-// @Summary      获取提示词模板
-// @Description  获取系统配置的提示词模板列表
-// @Tags         租户管理
+// @Summary      프롬프트 템플릿 조회
+// @Description  시스템에 설정된 프롬프트 템플릿 목록을 가져옵니다
+// @Tags         테넌트 관리
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  map[string]interface{}  "提示词模板配置"
-// @Failure      400  {object}  errors.AppError         "请求参数错误"
+// @Success      200  {object}  map[string]interface{}  "프롬프트 템플릿 설정"
+// @Failure      400  {object}  errors.AppError         "잘못된 요청"
 // @Security     Bearer
 // @Security     ApiKeyAuth
 // @Router       /tenants/kv/prompt-templates [get]

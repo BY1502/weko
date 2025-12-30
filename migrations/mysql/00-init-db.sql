@@ -95,7 +95,7 @@ CREATE TABLE sessions (
     max_rounds INT NOT NULL DEFAULT 5,
     enable_rewrite BOOLEAN NOT NULL DEFAULT TRUE,
     fallback_strategy VARCHAR(255) NOT NULL DEFAULT 'fixed',
-    fallback_response VARCHAR(255) NOT NULL DEFAULT '很抱歉，我暂时无法回答这个问题。',
+    fallback_response VARCHAR(255) NOT NULL DEFAULT '죄송합니다. 지금은 답변을 제공할 수 없습니다.',
     keyword_threshold FLOAT NOT NULL DEFAULT 0.5,
     vector_threshold FLOAT NOT NULL DEFAULT 0.5,
     rerank_model_id VARCHAR(64),

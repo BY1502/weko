@@ -1,37 +1,37 @@
-# 测试 Markdown 文档
+# Markdown 테스트 문서
 
-这是一个测试 Markdown 文档，用于测试 Markdown 解析功能。
+Markdown 파싱 기능을 검증하기 위한 샘플입니다.
 
-## 包含图片
+## 이미지 포함
 
-![测试图片](https://geektutu.com/post/quick-go-protobuf/go-protobuf.jpg)
+![테스트 이미지](https://geektutu.com/post/quick-go-protobuf/go-protobuf.jpg)
 
-## 包含链接
+## 링크 포함
 
-这是一个[测试链接](https://example.com)。
+이것은 [테스트 링크](https://example.com)입니다.
 
-## 包含代码块
+## 코드 블록 포함
 
 ```python
 def hello_world():
     print("Hello, World!")
 ```
 
-## 包含表格
+## 표 포함
 
-| 表头1 | 表头2 |
+| 헤더1 | 헤더2 |
 |-------|-------|
-| 内容1 | 内容2 |
-| 内容3 | 内容4 |
+| 내용1 | 내용2 |
+| 내용3 | 내용4 |
 
-## 测试分块功能
+## 분할 기능 테스트
 
-这部分内容用于测试分块功能，确保 Markdown 结构在分块时保持完整。
+분할 기능을 테스트해 Markdown 구조가 유지되는지 확인합니다.
 
-- 第一块内容
-- 第二块内容
-- 第三块内容
+- 첫 번째 내용
+- 두 번째 내용
+- 세 번째 내용
 
-## 测试重叠功能
+## 겹침 테스트
 
-这部分内容可能会在分块时与前后块重叠，以确保上下文的连续性。 
+분할 시 전후 블록과 겹쳐 문맥 연속성을 보장하는 경우를 확인합니다. 
