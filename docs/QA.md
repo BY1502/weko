@@ -1,121 +1,115 @@
-# 常见问题
+# 자주 묻는 질문 (FAQ)
 
-## 1. 如何查看日志？
+## 1. 로그는 어떻게 확인하나요?
+
 ```bash
 docker compose logs -f app docreader postgres
 ```
 
-## 2. 如何启动和停止服务？
+# 서비스 시작
+
 ```bash
-# 启动服务
 ./scripts/start_all.sh
 
-# 停止服务
+# 서비스 중지
 ./scripts/start_all.sh --stop
 
-# 清空数据库
+# 데이터베이스 초기화 (주의: 데이터 삭제됨)
 ./scripts/start_all.sh --stop && make clean-db
 ```
 
-## 3. 服务启动后无法正常上传文档？
-
-通常是Embedding模型和对话模型没有正确被设置导致。按照以下步骤进行排查
-
-1. 查看`.env`配置中的模型信息是否配置完整，其中如果使用ollama访问本地模型，需要确保本地ollama服务正常运行，同时在`.env`中的如下环境变量需要正确设置:
 ```bash
-# LLM Model
+# LLM 모델 이름
 INIT_LLM_MODEL_NAME=your_llm_model
-# Embedding Model
+# 임베딩 모델 이름
 INIT_EMBEDDING_MODEL_NAME=your_embedding_model
-# Embedding模型向量维度
+# 임베딩 모델 차원 수 (예: 768, 1024 등)
 INIT_EMBEDDING_MODEL_DIMENSION=your_embedding_model_dimension
-# Embedding模型的ID，通常是一个字符串
+# 임베딩 모델 ID (보통 문자열)
 INIT_EMBEDDING_MODEL_ID=your_embedding_model_id
 ```
 
-如果是通过remote api访问模型，则需要额外提供对应的`BASE_URL`和`API_KEY`:
-```bash
-# LLM模型的访问地址
-INIT_LLM_MODEL_BASE_URL=your_llm_model_base_url
-# LLM模型的API密钥，如果需要身份验证，可以设置
-INIT_LLM_MODEL_API_KEY=your_llm_model_api_key
-# Embedding模型的访问地址
-INIT_EMBEDDING_MODEL_BASE_URL=your_embedding_model_base_url
-# Embedding模型的API密钥，如果需要身份验证，可以设置
-INIT_EMBEDDING_MODEL_API_KEY=your_embedding_model_api_key
-```
+# LLM 모델 접속 주소 및 API 키 설정
 
-当需要重排序功能时，需要额外配置Rerank模型，具体配置如下：
 ```bash
-# 使用的Rerank模型名称
+INIT_LLM_MODEL_BASE_URL=your_llm_model_base_url
+# LLM 모델 API 키
+INIT_LLM_MODEL_API_KEY=your_llm_model_api_key
+# 임베딩 모델 접속 주소
+INIT_EMBEDDING_MODEL_BASE_URL=your_embedding_model_base_url
+# 임베딩 모델 API 키
+INIT_EMBEDDING_MODEL_API_KEY=your_embedding_model_api_key
+
+# Rerank 모델 이름
 INIT_RERANK_MODEL_NAME=your_rerank_model_name
-# Rerank模型的访问地址
+# Rerank 모델 접속 주소
 INIT_RERANK_MODEL_BASE_URL=your_rerank_model_base_url
-# Rerank模型的API密钥，如果需要身份验证，可以设置
+# Rerank 모델 API 키
 INIT_RERANK_MODEL_API_KEY=your_rerank_model_api_key
 ```
 
-2. 查看主服务日志，是否有`ERROR`日志输出
+# VLM(시각-언어) 모델 이름 설정
 
-## 4. 如何开启多模态功能？
-1. 确保 `.env` 如下配置被正确设置:
 ```bash
-# VLM_MODEL_NAME 使用的多模态模型名称
 VLM_MODEL_NAME=your_vlm_model_name
 
-# VLM_MODEL_BASE_URL 使用的多模态模型访问地址
+# VLM 모델 접속 주소
 VLM_MODEL_BASE_URL=your_vlm_model_base_url
 
-# VLM_MODEL_API_KEY 使用的多模态模型API密钥
+# VLM 모델 API 키
 VLM_MODEL_API_KEY=your_vlm_model_api_key
 ```
-注：多模态大模型当前仅支持remote api访问，固需要提供`VLM_MODEL_BASE_URL`和`VLM_MODEL_API_KEY`
 
-2. 解析后的文件需要上传到COS中，确保 `.env` 中 `COS` 信息正确设置：
+# 텐센트 클라우드 COS Secret ID
+
 ```bash
-# 腾讯云COS的访问密钥ID
 COS_SECRET_ID=your_cos_secret_id
 
-# 腾讯云COS的密钥
+# 텐센트 클라우드 COS Secret Key
 COS_SECRET_KEY=your_cos_secret_key
 
-# 腾讯云COS的区域，例如 ap-guangzhou
+# COS 리전 (예: ap-guangzhou)
 COS_REGION=your_cos_region
 
-# 腾讯云COS的桶名称
+# COS 버킷 이름
 COS_BUCKET_NAME=your_cos_bucket_name
 
-# 腾讯云COS的应用ID
+# COS 앱 ID
 COS_APP_ID=your_cos_app_id
 
-# 腾讯云COS的路径前缀，用于存储文件
+# 파일 저장 경로 접두사
 COS_PATH_PREFIX=your_cos_path_prefix
 ```
-重要：务必将COS中文件的权限设置为**公有读**，否则文档解析模块无法正常解析文件
 
-3. 查看文档解析模块日志，查看OCR和Caption是否正确解析和打印
+```bash
+중요: COS 내 파일 권한을 반드시 **'공개 읽기(Public Read)'**로 설정해야 문서 파싱 모듈이 정상적으로 파일을 읽을 수 있습니다.
 
+문서 파싱 모듈(docreader) 로그를 확인하여 OCR과 캡션(Caption) 생성이 정상적으로 되는지 확인하세요.
 
-## 5. 如何使用数据分析功能？
+5. 데이터 분석 기능은 어떻게 사용하나요?
+데이터 분석 기능을 사용하려면 에이전트 도구 설정이 필요합니다:
 
-在使用数据分析功能前，请确保智能体已配置相关工具：
+지능형 추론 (Agent 모드): 도구 설정에서 다음 두 가지를 체크하세요.
 
-1. **智能推理**：需在工具配置中勾选以下两个工具：
-   - 查看数据元信息
-   - 数据分析
+데이터 메타 정보 조회 (View Data Metadata)
 
-2. **快速问答智能体**：无需手动选择工具，即可直接进行简单的数据查询操作。
+데이터 분석 (Data Analysis)
 
-### 注意事项与使用规范
+빠른 문답 (Chat 모드): 별도 도구 선택 없이 바로 간단한 데이터 질의가 가능합니다.
 
-1. **支持的文件格式**
-   - 目前仅支持 **CSV** (`.csv`) 和 **Excel** (`.xlsx`, `.xls`) 格式的文件。
-   - 对于复杂的 Excel 文件，如果读取失败，建议将其转换为标准的 CSV 格式后重新上传。
+주의사항 및 사용 규범
+지원 파일 형식
 
-2. **查询限制**
-   - 仅支持 **只读查询**，包括 `SELECT`, `SHOW`, `DESCRIBE`, `EXPLAIN`, `PRAGMA` 等语句。
-   - 禁止执行任何修改数据的操作，如 `INSERT`, `UPDATE`, `DELETE`, `CREATE`, `DROP` 等。
+현재 CSV (.csv) 및 Excel (.xlsx, .xls) 형식만 지원합니다.
 
+복잡한 Excel 파일의 경우 읽기 실패 시 표준 CSV 형식으로 변환하여 업로드하는 것을 권장합니다.
 
-## P.S.
-如果以上方式未解决问题，请在issue中描述您的问题，并提供必要的日志信息辅助我们进行问题排查
+쿼리 제한
+
+읽기 전용 쿼리만 지원합니다: SELECT, SHOW, DESCRIBE, EXPLAIN, PRAGMA 등.
+
+데이터 수정 작업(INSERT, UPDATE, DELETE, CREATE, DROP 등)은 금지됩니다.
+
+P.S.
+위 방법으로 해결되지 않는 경우, Issue에 문제 상황과 관련 로그 정보를 남겨주시면 문제 해결을 도와드리겠습니다.
+```

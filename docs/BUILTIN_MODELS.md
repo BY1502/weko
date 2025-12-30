@@ -1,37 +1,38 @@
-# 内置模型管理指南
+# 내장 모델(Built-in Model) 관리 가이드
 
-## 概述
+## 개요
 
-内置模型是系统级别的模型配置，对所有租户可见，但敏感信息会被隐藏，且不可编辑或删除。内置模型通常用于提供系统默认的模型配置，确保所有租户都能使用统一的模型服务。
+내장 모델은 시스템 레벨의 모델 설정으로, 모든 테넌트(사용자 그룹)에게 보이지만 민감한 정보는 숨겨지며 편집이나 삭제가 불가능합니다. 보통 모든 사용자가 공통으로 사용할 기본 모델 서비스를 제공할 때 사용합니다.
 
-## 内置模型特性
+## 내장 모델의 특징
 
-- **所有租户可见**：内置模型对所有租户都可见，无需单独配置
-- **安全保护**：内置模型的敏感信息（API Key、Base URL）会被隐藏，无法查看详情
-- **只读保护**：内置模型不能被编辑或删除，只能设置为默认模型
-- **统一管理**：由系统管理员统一维护，确保配置一致性和安全性
+- **모든 테넌트에게 공개**: 별도 설정 없이 모든 테넌트가 볼 수 있습니다.
+- **보안**: API Key나 Base URL 같은 민감한 정보는 숨겨져 있어 상세 내용을 볼 수 없습니다.
+- **읽기 전용**: 내장 모델은 수정하거나 삭제할 수 없으며, '기본 모델'로 설정만 가능합니다.
+- **통합 관리**: 시스템 관리자가 일괄 관리하므로 설정의 일관성과 안전성을 보장합니다.
 
-## 如何添加内置模型
+## 내장 모델 추가 방법
 
-内置模型需要通过数据库直接插入。以下是添加内置模型的步骤：
+내장 모델은 데이터베이스에 직접 SQL을 실행하여 추가해야 합니다.
 
-### 1. 准备模型数据
+### 1. 모델 데이터 준비
 
-首先，确保你已经有了要设置为内置模型的模型配置信息，包括：
-- 模型名称（name）
-- 模型类型（type）：`KnowledgeQA`、`Embedding`、`Rerank` 或 `VLLM`
-- 模型来源（source）：`local` 或 `remote`
-- 模型参数（parameters）：包括 base_url、api_key、provider 等
-- 租户ID（tenant_id）：建议使用小于10000的租户ID，避免冲突
+추가할 모델의 설정 정보를 준비합니다:
 
-**支持的服务商（provider）**：`generic`（自定义）、`openai`、`aliyun`、`zhipu`、`volcengine`、`hunyuan`、`deepseek`、`minimax`、`mimo`、`siliconflow`、`jina`、`openrouter`、`gemini`
+- 모델 이름 (name)
+- 모델 유형 (type): `KnowledgeQA`, `Embedding`, `Rerank`, `VLLM`
+- 모델 출처 (source): `local` 또는 `remote`
+- 모델 매개변수 (parameters): base_url, api_key, provider 등
+- 테넌트 ID (tenant_id): 충돌 방지를 위해 10000 미만의 시스템용 ID 사용 권장
 
-### 2. 执行 SQL 插入语句
+**지원하는 제공자 (provider)**: `generic` (사용자 정의), `openai`, `aliyun`, `zhipu`, `volcengine`, `hunyuan`, `deepseek`, `minimax`, `mimo`, `siliconflow`, `jina`, `openrouter`, `gemini`
 
-使用以下 SQL 语句插入内置模型：
+### 2. SQL 삽입 실행
+
+아래 SQL 예시를 참고하여 모델을 추가하세요.
 
 ```sql
--- 示例：插入一个 LLM 内置模型
+-- 예시: LLM 내장 모델 추가
 INSERT INTO models (
     id,
     tenant_id,
@@ -44,19 +45,19 @@ INSERT INTO models (
     status,
     is_builtin
 ) VALUES (
-    'builtin-llm-001',                    -- 使用固定ID，建议使用 builtin- 前缀
-    10000,                                -- 租户ID（使用第一个租户）
-    'GPT-4',                              -- 模型名称
-    'KnowledgeQA',                        -- 模型类型
-    'remote',                             -- 模型来源
-    '内置 LLM 模型',                       -- 描述
-    '{"base_url": "https://api.openai.com/v1", "api_key": "sk-xxx", "provider": "openai"}'::jsonb,  -- 参数（JSON格式）
-    false,                                -- 是否默认
-    'active',                             -- 状态
-    true                                  -- 标记为内置模型
+    'builtin-llm-001',                    -- 고정 ID 사용 권장 (builtin- 접두사)
+    10000,                                -- 테넌트 ID (첫 번째 테넌트 사용)
+    'GPT-4',                              -- 모델 이름
+    'KnowledgeQA',                        -- 모델 유형
+    'remote',                             -- 모델 출처
+    '내장 LLM 모델',                       -- 설명
+    '{"base_url": "[https://api.openai.com/v1](https://api.openai.com/v1)", "api_key": "sk-xxx", "provider": "openai"}'::jsonb,  -- 파라미터 (JSON)
+    false,                                -- 기본값 여부
+    'active',                             -- 상태
+    true                                  -- 내장 모델로 표시
 ) ON CONFLICT (id) DO NOTHING;
 
--- 示例：插入一个 Embedding 内置模型
+-- 예시: Embedding 내장 모델 추가
 INSERT INTO models (
     id,
     tenant_id,
@@ -74,14 +75,14 @@ INSERT INTO models (
     'text-embedding-ada-002',
     'Embedding',
     'remote',
-    '内置 Embedding 模型',
-    '{"base_url": "https://api.openai.com/v1", "api_key": "sk-xxx", "provider": "openai", "embedding_parameters": {"dimension": 1536, "truncate_prompt_tokens": 0}}'::jsonb,
+    '내장 Embedding 모델',
+    '{"base_url": "[https://api.openai.com/v1](https://api.openai.com/v1)", "api_key": "sk-xxx", "provider": "openai", "embedding_parameters": {"dimension": 1536, "truncate_prompt_tokens": 0}}'::jsonb,
     false,
     'active',
     true
 ) ON CONFLICT (id) DO NOTHING;
 
--- 示例：插入一个 ReRank 内置模型
+-- 예시: ReRank 내장 모델 추가
 INSERT INTO models (
     id,
     tenant_id,
@@ -99,14 +100,14 @@ INSERT INTO models (
     'bge-reranker-base',
     'Rerank',
     'remote',
-    '内置 ReRank 模型',
-    '{"base_url": "https://api.jina.ai/v1", "api_key": "jina-xxx", "provider": "jina"}'::jsonb,
+    '내장 ReRank 모델',
+    '{"base_url": "[https://api.jina.ai/v1](https://api.jina.ai/v1)", "api_key": "jina-xxx", "provider": "jina"}'::jsonb,
     false,
     'active',
     true
 ) ON CONFLICT (id) DO NOTHING;
 
--- 示例：插入一个 VLLM 内置模型
+-- 示例：插入一个 VLLM 内置模型 ??
 INSERT INTO models (
     id,
     tenant_id,
@@ -132,44 +133,47 @@ INSERT INTO models (
 ) ON CONFLICT (id) DO NOTHING;
 ```
 
-### 3. 验证插入结果
+### 3. 결과 확인
 
-执行以下 SQL 查询验证内置模型是否成功插入：
+다음 쿼리로 내장 모델이 잘 들어갔는지 확인합니다:
 
 ```sql
-SELECT id, name, type, is_builtin, status 
-FROM models 
+SELECT id, name, type, is_builtin, status
+FROM models
 WHERE is_builtin = true
 ORDER BY type, created_at;
 ```
 
-## 注意事项
+## 주의사항
 
-1. **ID 命名规范**：建议使用 `builtin-{type}-{序号}` 的格式，例如 `builtin-llm-001`、`builtin-embedding-001`
-2. **租户ID**：内置模型可以属于任意租户，但建议使用第一个租户ID（通常是 10000）
-3. **参数格式**：`parameters` 字段必须是有效的 JSON 格式
-4. **幂等性**：使用 `ON CONFLICT (id) DO NOTHING` 确保重复执行不会报错
-5. **安全性**：内置模型的 API Key 和 Base URL 在前端会被自动隐藏，但数据库中的原始数据仍然存在，请妥善保管数据库访问权限
+ID 명명 규칙: builtin-{type}-{번호} 형식을 권장합니다. (예: builtin-llm-001)
 
-## 将现有模型设置为内置模型
+테넌트 ID: 보통 첫 번째 테넌트 ID인 10000을 사용합니다.
 
-如果你已经有一个模型，想将其设置为内置模型，可以使用 UPDATE 语句：
+파라미터 형식: parameters 필드는 반드시 유효한 JSON 형식이어야 합니다.
 
-```sql
-UPDATE models 
-SET is_builtin = true 
-WHERE id = '模型ID' AND name = '模型名称';
-```
+멱등성: ON CONFLICT (id) DO NOTHING 구문을 사용하여 중복 실행 시 에러를 방지합니다.
 
-## 移除内置模型
+보안: 프론트엔드에서는 키가 가려지지만 DB에는 원문이 저장되므로 DB 접근 권한 관리에 유의하세요.
 
-如果需要移除内置模型标记（恢复为普通模型），执行：
+## 기존 모델을 내장 모델로 변경하기
+
+이미 등록된 모델을 내장 모델로 바꾸려면:
 
 ```sql
-UPDATE models 
-SET is_builtin = false 
-WHERE id = '模型ID';
+UPDATE models
+SET is_builtin = true
+WHERE id = '모델ID' AND name = '모델이름';
 ```
 
-注意：移除内置模型标记后，该模型将恢复为普通模型，可以被编辑和删除。
+## 내장 모델 해제하기
 
+내장 모델 표시를 제거하고 일반 모델로 되돌리려면:
+
+```sql
+UPDATE models
+SET is_builtin = false
+WHERE id = '모델ID';
+```
+
+(주의: 해제 후에는 편집 및 삭제가 가능해집니다.)
